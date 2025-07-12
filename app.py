@@ -1,28 +1,19 @@
 import streamlit as st
 import pickle
-import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
-from nltk.tokenize import word_tokenize
 
-import os
-
+# -------------------------
+# 📥 Ensure NLTK Data
+# -------------------------
 def ensure_nltk_data():
-    nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
-    nltk.data.path.append(nltk_data_path)
-
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        nltk.download('punkt', download_dir=nltk_data_path)
-
     try:
         nltk.data.find('corpora/stopwords')
     except LookupError:
-        nltk.download('stopwords', download_dir=nltk_data_path)
+        nltk.download('stopwords')
 
-
+ensure_nltk_data()
 
 # -------------------------
 # 📌 Preprocessing Function
@@ -30,15 +21,10 @@ def ensure_nltk_data():
 ps = PorterStemmer()
 
 def transform_text(text):
-    # Lowercase
     text = text.lower()
-    # Tokenize
-    tokens = word_tokenize(text)
-    # Keep alphanumeric
+    tokens = text.split()  # Replaced word_tokenize to avoid punkt dependency
     tokens = [word for word in tokens if word.isalnum()]
-    # Remove stopwords and punctuation
     tokens = [word for word in tokens if word not in stopwords.words('english')]
-    # Stemming
     tokens = [ps.stem(word) for word in tokens]
     return " ".join(tokens)
 
@@ -85,4 +71,5 @@ if st.button('🔍 Predict'):
         # Show the preprocessed version (optional)
         with st.expander("🔎 See Preprocessed Text"):
             st.code(transformed_sms)
+
 
