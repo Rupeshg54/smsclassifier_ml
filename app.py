@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 import pickle
 import string
@@ -8,15 +6,20 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
 
-# -------------------------
-# 📦 NLTK Data Download (only once)
-# -------------------------
-@st.cache_data
-def download_nltk_data():
-    nltk.download('punkt')
-    nltk.download('stopwords')
+# Safe way to download only if needed
+def ensure_nltk_data():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
 
-download_nltk_data()
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords')
+
+ensure_nltk_data()
+
 
 # -------------------------
 # 📌 Preprocessing Function
