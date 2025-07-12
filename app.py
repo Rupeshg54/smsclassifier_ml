@@ -6,19 +6,22 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
 
-# Safe way to download only if needed
+import os
+
 def ensure_nltk_data():
+    nltk_data_path = os.path.join(os.path.dirname(__file__), "nltk_data")
+    nltk.data.path.append(nltk_data_path)
+
     try:
         nltk.data.find('tokenizers/punkt')
     except LookupError:
-        nltk.download('punkt')
+        nltk.download('punkt', download_dir=nltk_data_path)
 
     try:
         nltk.data.find('corpora/stopwords')
     except LookupError:
-        nltk.download('stopwords')
+        nltk.download('stopwords', download_dir=nltk_data_path)
 
-ensure_nltk_data()
 
 
 # -------------------------
